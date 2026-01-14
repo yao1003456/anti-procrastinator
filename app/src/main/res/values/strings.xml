@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Anti Procrastinator</string>
+    <string name="accessibility_service_description">Helps you stay focused by intervening when you open distracting apps.</string>
+</resources>

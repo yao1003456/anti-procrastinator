@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    
+    <!-- Pastel Light Theme -->
+    <color name="primary">#7986CB</color> <!-- Pastel Indigo -->
+    <color name="primary_dark">#303F9F</color>
+    <color name="accent">#4DB6AC</color> <!-- Pastel Teal -->
+    <color name="background">#FAFAFA</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="text_primary">#455A64</color>
+    <color name="text_secondary">#78909C</color>
+</resources>
