@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class BlockedAppsManager {
-    private static final String PREF_NAME = "blocked_apps_pref";
-    private static final String KEY_BLOCKED_PACKAGES = "blocked_packages";
+    public static final String PREF_NAME = "blocked_apps_pref";
+    public static final String KEY_BLOCKED_PACKAGES = "blocked_packages";
 
     private SharedPreferences sharedPreferences;
 

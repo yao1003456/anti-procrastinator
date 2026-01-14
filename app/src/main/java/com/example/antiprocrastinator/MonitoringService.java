@@ -14,12 +14,43 @@ public class MonitoringService extends AccessibilityService {
     public static long sAllowTime = 0;
 
     private BlockedAppsManager blockedAppsManager;
+    private android.content.SharedPreferences.OnSharedPreferenceChangeListener listener;
+    private Set<String> cachedBlockedPackages = new HashSet<>();
 
     @Override
     public void onServiceConnected() {
         super.onServiceConnected();
         Log.d("MonitoringService", "Service Connected");
         blockedAppsManager = new BlockedAppsManager(this);
+        
+        // Optimization: Cache the blocked packages to avoid reading from SharedPreferences (and creating new Set objects)
+        // on every single window state change event.
+        updateBlockedPackagesCache();
+        
+        android.content.SharedPreferences prefs = getSharedPreferences(BlockedAppsManager.PREF_NAME, MODE_PRIVATE);
+        listener = new android.content.SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(android.content.SharedPreferences sharedPreferences, String key) {
+                if (BlockedAppsManager.KEY_BLOCKED_PACKAGES.equals(key)) {
+                    updateBlockedPackagesCache();
+                }
+            }
+        };
+        prefs.registerOnSharedPreferenceChangeListener(listener);
+    }
+
+    private void updateBlockedPackagesCache() {
+        // Create a new copy to ensure thread safety if accessed concurrently (though main thread is primary)
+        cachedBlockedPackages = new HashSet<>(blockedAppsManager.getBlockedApps());
+    }
+    
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (listener != null) {
+            getSharedPreferences(BlockedAppsManager.PREF_NAME, MODE_PRIVATE)
+                .unregisterOnSharedPreferenceChangeListener(listener);
+        }
     }
 
     @Override
@@ -27,11 +58,8 @@ public class MonitoringService extends AccessibilityService {
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             String packageName = event.getPackageName() != null ? event.getPackageName().toString() : "";
             
-            // Re-instantiate or just use the manager. The manager reads from SP.
-            // For real-time updates from the UI, reading from SP is the easiest way to ensure we have the latest data.
-            // Optimization: The SharedPreference object internally handles caching and listener updates, 
-            // but `getStringSet` creates a new Set copy. 
-            if (blockedAppsManager.isBlocked(packageName)) {
+            // Optimization: Check against local cache instead of asking manager (which asks SP)
+            if (cachedBlockedPackages.contains(packageName)) {
                 if (shouldBlock(packageName)) {
                     // Log.d("MonitoringService", "Blocking package: " + packageName);
                     Intent intent = new Intent(this, BlockActivity.class);
