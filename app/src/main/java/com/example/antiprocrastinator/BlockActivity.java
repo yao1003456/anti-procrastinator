@@ -16,6 +16,23 @@ public class BlockActivity extends Activity {
         Button btnContinue = findViewById(R.id.btn_continue);
         Button btnHome = findViewById(R.id.btn_home);
 
+        BlockedAppsManager manager = new BlockedAppsManager(this);
+        int delaySeconds = manager.getIntentionDelaySeconds();
+
+        if (delaySeconds > 0) {
+            btnContinue.setEnabled(false);
+            new android.os.CountDownTimer(delaySeconds * 1000L, 1000) {
+                public void onTick(long millisUntilFinished) {
+                    btnContinue.setText("Wait " + (millisUntilFinished / 1000 + 1) + "s");
+                }
+
+                public void onFinish() {
+                    btnContinue.setEnabled(true);
+                    btnContinue.setText("Continue to App");
+                }
+            }.start();
+        }
+
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

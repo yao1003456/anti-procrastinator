@@ -46,7 +46,10 @@ public class MonitoringService extends AccessibilityService {
     private boolean shouldBlock(String packageName) {
         if (packageName.equals(sTemporarilyAllowedPackage)) {
             long gracePeriodMs = blockedAppsManager.getTimeoutSeconds() * 1000L;
+            // Bug Fix: Refresh the session as long as the user is "active" (navigating)
+            // This changes the logic from "Time since unlock" to "Time since last activity"
             if (System.currentTimeMillis() - sAllowTime < gracePeriodMs) {
+                sAllowTime = System.currentTimeMillis(); 
                 return false; // Still in grace period
             }
         }

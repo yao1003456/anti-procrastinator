@@ -55,4 +55,12 @@ public class BlockedAppsManager {
     public void setThemeMode(int mode) {
         sharedPreferences.edit().putInt("pref_theme_mode", mode).apply();
     }
+
+    public int getIntentionDelaySeconds() {
+        return sharedPreferences.getInt("pref_intention_delay_seconds", 0);
+    }
+
+    public void setIntentionDelaySeconds(int seconds) {
+        sharedPreferences.edit().putInt("pref_intention_delay_seconds", seconds).apply();
+    }
 }

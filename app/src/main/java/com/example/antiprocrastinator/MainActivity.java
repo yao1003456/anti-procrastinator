@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private androidx.recyclerview.widget.RecyclerView rvApps;
     private android.widget.EditText etTimeout;
     private Button btnSaveTimeout;
+    private android.widget.EditText etIntentionDelay;
+    private Button btnSaveIntentionDelay;
     private BlockedAppsManager blockedAppsManager;
 
     @Override
@@ -39,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
         rvApps = findViewById(R.id.rv_apps);
         etTimeout = findViewById(R.id.et_timeout);
         btnSaveTimeout = findViewById(R.id.btn_save_timeout);
+        etIntentionDelay = findViewById(R.id.et_intention_delay);
+        btnSaveIntentionDelay = findViewById(R.id.btn_save_intention_delay);
         com.google.android.material.button.MaterialButton btnThemeToggle = findViewById(R.id.btn_theme_toggle);
         
         btnThemeToggle.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +86,21 @@ public class MainActivity extends AppCompatActivity {
                     int seconds = Integer.parseInt(etTimeout.getText().toString());
                     blockedAppsManager.setTimeoutSeconds(seconds);
                     Toast.makeText(MainActivity.this, "Timeout saved!", Toast.LENGTH_SHORT).show();
+                } catch (NumberFormatException e) {
+                    Toast.makeText(MainActivity.this, "Invalid number", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        // Intention Delay Logic
+        etIntentionDelay.setText(String.valueOf(blockedAppsManager.getIntentionDelaySeconds()));
+        btnSaveIntentionDelay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    int seconds = Integer.parseInt(etIntentionDelay.getText().toString());
+                    blockedAppsManager.setIntentionDelaySeconds(seconds);
+                    Toast.makeText(MainActivity.this, "Delay saved!", Toast.LENGTH_SHORT).show();
                 } catch (NumberFormatException e) {
                     Toast.makeText(MainActivity.this, "Invalid number", Toast.LENGTH_SHORT).show();
                 }
