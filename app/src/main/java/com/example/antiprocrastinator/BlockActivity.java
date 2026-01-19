@@ -37,24 +37,28 @@ public class BlockActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // Determine which package we are unblocking.
-                // For now, we just finish, and the Service will need to know not to block immediately again.
-                // We can send a broadcast or use a shared preference/singleton to notify the service.
-                
-                // Let's use a static flag in the Service or a shared preference for simplicity in this MVP.
+                // For now, we just finish, and the Service will need to know not to block
+                // immediately again.
+                // We can send a broadcast or use a shared preference/singleton to notify the
+                // service.
+
+                // Let's use a static flag in the Service or a shared preference for simplicity
+                // in this MVP.
                 // Actually, sending a broadcast is cleaner or just setting a global state.
                 MonitoringService.sTemporarilyAllowedPackage = getIntent().getStringExtra("PACKAGE_NAME");
-                MonitoringService.sAllowTime = System.currentTimeMillis();
-                
-                // Explicitly launch the app we just allowed to ensure we don't go back to Anti-Procrastinator
+                MonitoringService.sLastExitTime = System.currentTimeMillis();
+
+                // Explicitly launch the app we just allowed to ensure we don't go back to
+                // Anti-Procrastinator
                 String packageName = getIntent().getStringExtra("PACKAGE_NAME");
                 if (packageName != null) {
                     Intent launchIntent = getPackageManager().getLaunchIntentForPackage(packageName);
                     if (launchIntent != null) {
-                         launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                         startActivity(launchIntent);
+                        launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(launchIntent);
                     }
                 }
-                
+
                 finish();
             }
         });
@@ -71,7 +75,7 @@ public class BlockActivity extends Activity {
             }
         });
     }
-    
+
     @Override
     public void onBackPressed() {
         // Prevent back button from bypassing the screen easily, or just go home
